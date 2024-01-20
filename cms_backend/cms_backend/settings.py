@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'content_management',
+    'content',
     'users',
     'rest_framework',
     'rest_framework_simplejwt',
@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'cms_backend.urls'
 
@@ -151,9 +152,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_PARSER_CLASSES': [
-        'rest_framework.parsers.JSONParser',
-    ],
+    # 'DEFAULT_PARSER_CLASSES': [
+    #     'rest_framework.parsers.JSONParser',
+    # ],
 }
 
 # Internationalization

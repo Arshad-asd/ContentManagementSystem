@@ -1,2 +1,5 @@
 /cms_backend/env
 .env
+/cms_backend/content/migrations
+/cms_backend/users/migrations
+/cms_backend/media/documents
