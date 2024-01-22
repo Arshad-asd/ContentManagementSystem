@@ -17,7 +17,7 @@ class CategoryCreateView(generics.CreateAPIView):
         serializer.save()
 
 
-class ContentItemCreate(generics.CreateAPIView):
+class ContentItemCreate(generics.CreateAPIView): # Content creatd by author own
     permission_classes = [permissions.IsAuthenticated]
     queryset = ContentItem.objects.all()
     serializer_class = ContentItemSerializer

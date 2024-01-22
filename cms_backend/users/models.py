@@ -9,7 +9,6 @@ class CustomUserManager(BaseUserManager):
             raise ValueError('The given email must be set')
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
-        user.role = Role.ADMIN
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -22,6 +21,7 @@ class CustomUserManager(BaseUserManager):
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('role', 'admin') 
         return self._create_user(email, password, **extra_fields)
 
 
@@ -37,12 +37,6 @@ class CustomUser(AbstractUser):
     phone_number = PhoneNumberField(null=True, blank=True)
     role = models.CharField(
         max_length=20, choices=Role.choices, default=Role.USER)
-
-    # Address fields
-    city = models.CharField(max_length=255, blank=True, null=True)
-    state = models.CharField(max_length=255, blank=True, null=True)
-    country = models.CharField(max_length=255, blank=True, null=True)
-    pincode = models.CharField(max_length=6, blank=True, null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['phone_number']
