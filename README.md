@@ -9,7 +9,7 @@ This repository contains the source code for a Content Management System develop
 
 - [Core Features](#core-features)
 
-- [Setup & Running Instructions](#project-setup-and-running)
+- [Setup & Running Instructions](#project-set-up-and-running)
 
 - [API Endpoints](#api-endpoints)
 
