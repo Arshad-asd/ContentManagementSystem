@@ -1,9 +1,10 @@
 from django.db import models
-
 from users.models import CustomUser
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
+
 
 class ContentItem(models.Model):
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

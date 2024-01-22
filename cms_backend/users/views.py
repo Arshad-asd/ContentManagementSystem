@@ -1,4 +1,3 @@
-# views.py
 from rest_framework import generics
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import permissions
@@ -19,7 +18,6 @@ class UserLoginView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 
-
 class UsersListView(generics.ListAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
@@ -36,9 +34,11 @@ class UsersListView(generics.ListAPIView):
 
         if query:
             # If a search query is provided, filter by email or phone_number
-            queryset = queryset.filter(Q(email__icontains=query) | Q(phone_number__icontains=query))
+            queryset = queryset.filter(
+                Q(email__icontains=query) | Q(phone_number__icontains=query))
 
         return queryset
+
 
 class BlockUnblockUserView(UpdateAPIView):
     serializer_class = UserSerializer
@@ -52,7 +52,6 @@ class BlockUnblockUserView(UpdateAPIView):
         if instance:
             instance.is_active = not instance.is_active
             instance.save()
-
 
             message = " Unblocked" if instance.is_active else "Blocked"
             return Response({'message': f'You are {message}'}, status=status.HTTP_200_OK)

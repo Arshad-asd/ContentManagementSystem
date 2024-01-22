@@ -75,9 +75,10 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         return token
 
 
-
 class UserSerializer(serializers.ModelSerializer):
-    address = AddressSerializer(required=False) 
+    address = AddressSerializer(required=False)
+
     class Meta:
         model = CustomUser
-        fields = ['id', 'email', 'phone_number','first_name', 'last_name', 'role','address']
+        fields = ['id', 'email', 'phone_number',
+                  'first_name', 'last_name', 'role', 'address']

@@ -11,18 +11,20 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class ContentItemSerializer(serializers.ModelSerializer):
-    categories = serializers.ListField( write_only=True)
+    categories = serializers.ListField(write_only=True)
 
     class Meta:
         model = ContentItem
-        fields = ('id', 'title', 'body', 'summary', 'document', 'categories', 'author')
+        fields = ('id', 'title', 'body', 'summary',
+                  'document', 'categories', 'author')
         extra_kwargs = {'categories': {'required': False, 'write_only': True},
-                        'author': {'read_only': True,'required': False}}
+                        'author': {'read_only': True, 'required': False}}
 
     def validate_document(self, value):
         file_mime_type = mimetypes.guess_type(value.name)[0]
         if file_mime_type != 'application/pdf':
-            raise serializers.ValidationError("Only PDF documents are allowed.")
+            raise serializers.ValidationError(
+                "Only PDF documents are allowed.")
         return value
 
     # def create(self, validated_data):
@@ -39,6 +41,3 @@ class ContentItemSearchSerializer(serializers.ModelSerializer):
         model = ContentItem
         fields = ['id', 'author', 'title', 'body', 'summary',
                   'document', 'categories', 'created_at', 'updated_at']
-
-
-

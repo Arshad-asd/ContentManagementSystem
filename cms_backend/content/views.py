@@ -35,25 +35,18 @@ class ContentItemCreate(generics.CreateAPIView):
                 category_ids.append(category.id)
             else:
                 return Response(
-                    {"categories": [f"Category '{category_name}' does not exist."]},
+                    {"categories": [
+                        f"Category '{category_name}' does not exist."]},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-        # Remove the existing 'categories' key
-        request.data.pop('categories', None)
+        data = request.data
 
-        # Add the category IDs to the request data
-        request.data['categories']=category_ids
-        print(category_ids,'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
-        request.data['author'] = request.user.id
-        print(request.user.id,'jjjjjjjjjjjjjjjjjjj')
-        print(request.data,'daaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
-        # Create the serializer with the updated request data
-        serializer = self.get_serializer(data=request.data)
-        print(serializer,'ssssssssssssssssssssssssssssssssssss')
+        print(category_ids, 'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
+        serializer = self.get_serializer(data=data)
+        print(serializer, 'ssssssssssssssssssssssssssssssssssss')
         serializer.is_valid(raise_exception=True)
 
-        # Perform the create operation
         self.perform_create(serializer)
         # serializer.instance.categories.set(category_ids)
 
@@ -82,13 +75,16 @@ class ContentItemListView(generics.ListAPIView):
     queryset = ContentItem.objects.all()
     serializer_class = ContentItemSearchSerializer
 
+
 class AuthorContentItemList(generics.ListAPIView):
     serializer_class = ContentItemSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        author_id = self.request.user.id  # Assuming the author is the currently authenticated user
+        # Assuming the author is the currently authenticated user
+        author_id = self.request.user.id
         return ContentItem.objects.filter(author_id=author_id)
+
 
 class ContentItemDeleteView(generics.DestroyAPIView):
     queryset = ContentItem.objects.all()
@@ -99,6 +95,7 @@ class ContentItemDeleteView(generics.DestroyAPIView):
         instance.delete()
         return Response({'detail': 'Content deleted'}, status=200)
 
+
 class AuthorContentItemDeleteView(generics.DestroyAPIView):
     queryset = ContentItem.objects.all()
     serializer_class = ContentItemSerializer
@@ -107,8 +104,7 @@ class AuthorContentItemDeleteView(generics.DestroyAPIView):
     def delete(self, request, *args, **kwargs):
         instance = self.get_object()
 
-        # Check if the authenticated user is the author of the content
-        if request.user.role == 'author': 
+        if request.user.role == 'author':
             self.perform_destroy(instance)
             return self.get_response(message="ContentItem deleted successfully.")
         else:
