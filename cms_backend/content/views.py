@@ -31,6 +31,7 @@ class ContentItemCreate(generics.CreateAPIView):
         for category_name in category_names:
             # Fetch the corresponding category ID
             category = Category.objects.filter(name=category_name).first()
+            print(category,'catttttttttttttttt')
             if category:
                 category_ids.append(category.id)
             else:
@@ -41,14 +42,14 @@ class ContentItemCreate(generics.CreateAPIView):
                 )
 
         data = request.data
-
-        print(category_ids, 'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
+        data['categories'] = category_ids
+        data['author'] = request.user.id
         serializer = self.get_serializer(data=data)
-        print(serializer, 'ssssssssssssssssssssssssssssssssssss')
         serializer.is_valid(raise_exception=True)
-
-        self.perform_create(serializer)
-        # serializer.instance.categories.set(category_ids)
+        
+        serializer.save(author=request.user)
+        serializer.instance.categories.set(category_ids)
+        
 
         headers = self.get_success_headers(serializer.data)
 
