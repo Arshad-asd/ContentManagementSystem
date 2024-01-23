@@ -17,7 +17,7 @@ class CategoryCreateView(generics.CreateAPIView):
         serializer.save()
 
 
-class ContentItemCreate(generics.CreateAPIView): # Content creatd by author own
+class ContentItemCreate(generics.CreateAPIView):  # Content creatd by author own
     permission_classes = [permissions.IsAuthenticated]
     queryset = ContentItem.objects.all()
     serializer_class = ContentItemSerializer
@@ -31,7 +31,7 @@ class ContentItemCreate(generics.CreateAPIView): # Content creatd by author own
         for category_name in category_names:
             # Fetch the corresponding category ID
             category = Category.objects.filter(name=category_name).first()
-            print(category,'catttttttttttttttt')
+            print(category, 'catttttttttttttttt')
             if category:
                 category_ids.append(category.id)
             else:
@@ -46,14 +46,53 @@ class ContentItemCreate(generics.CreateAPIView): # Content creatd by author own
         data['author'] = request.user.id
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
-        
+
         serializer.save(author=request.user)
         serializer.instance.categories.set(category_ids)
-        
 
         headers = self.get_success_headers(serializer.data)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class ContentItemUpdate(generics.UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = ContentItem.objects.all()
+    serializer_class = ContentItemSerializer
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.author != self.request.user and not self.request.user.is_superuser:
+            return Response(
+                {"detail": "You do not have permission to perform this action."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        categories_data = request.data.get('categories', '')
+        category_names = categories_data.split(',')
+
+        category_ids = []
+        for category_name in category_names:
+            category = Category.objects.filter(name=category_name).first()
+            if category:
+                category_ids.append(category.id)
+            else:
+                return Response(
+                    {"categories": [
+                        f"Category '{category_name}' does not exist."]},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        data = request.data.copy()
+        data['categories'] = category_ids
+
+        serializer = self.get_serializer(instance, data=data, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        serializer.save()
+        instance.categories.set(category_ids)
+
+        return Response(serializer.data)
+
 
 
 class ContentItemSearchView(generics.ListAPIView):
@@ -113,3 +152,19 @@ class AuthorContentItemDeleteView(generics.DestroyAPIView):
 
     def get_response(self, message, status=200):
         return Response({'detail': message}, status=status)
+
+
+class AuthorContentDetailView(generics.RetrieveAPIView):
+    serializer_class = ContentItemSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # Filter content items based on the authenticated user (author)
+        return ContentItem.objects.filter(author=self.request.user)
+
+    def get_object(self):
+        # Get the content item by id for the authenticated user
+        queryset = self.get_queryset()
+        obj = generics.get_object_or_404(queryset, id=self.kwargs['pk'])
+        self.check_object_permissions(self.request, obj)
+        return obj

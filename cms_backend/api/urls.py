@@ -11,9 +11,12 @@ urlpatterns = [
 
     path('admin/category/create/',CategoryCreateView.as_view(),name='category-create' ),
     path('admin/content/contents-list/',ContentItemListView.as_view(),name='contents-list'),
+    path('admin/content/edit/<int:pk>/',ContentItemUpdate.as_view(),name='author-content-update'),
     path('admin/content/delete/<int:pk>/',ContentItemDeleteView.as_view(),name="content-delete"),
 
     path('author/content/create/', ContentItemCreate.as_view(), name='content-create'), 
     path('author/content/contents-list/',AuthorContentItemList.as_view(),name="author-content-list"),
+    path('author/content/edit/<int:pk>/',ContentItemUpdate.as_view(),name='author-content-update'),
+    path('author/content/detail/<int:pk>/',AuthorContentDetailView.as_view(),name='author-content-detailview'),
     path('author/content/delete/<int:pk>/',AuthorContentItemDeleteView.as_view(),name='author-content-delete'),
 ] 
