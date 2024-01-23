@@ -101,17 +101,6 @@ python manage.py runserver
 
 8. Access the API at [http://localhost:8000/api/](http://localhost:8000/api/)
 
-## Table of Contents
-
-- [Core Features](#core-features)
-
-- [Setup & Running Instructions](#project-setup-and-running)
-
-- [API Endpoints](#api-endpoints)
-
-- [API Documentation](#api-documentation)
-
-- [Testing](#testing)
 
 ## API Endpoints
 
@@ -125,29 +114,27 @@ python manage.py runserver
           
 - `GET /api/admin/users-list/`: All users list role based.
 
+- `PATCH /api/admin/user/block-unblock/{user_id}/`: Block-Unblock user and author.
 
- 
-- `PATCH /api/admin/user/{user_id}/`: Block-Unblock user and author.
+- `GET /api/admin/content/contents-list/`: List all contents.
 
-- `GET /api/content/contents-list/`: List all contents.
+- `PUT /api/admin/content/edit/{content_id}/`: Edit s specific content.
 
-- `PUT /api/content/admin/edit/{content_id}/`: Edit s specific content.
-
-- `DELETE /api/content/admin/delete/{content_id}/`: Delete specific content.
+- `DELETE /api/admin/content/delete/{content_id}/`: Delete specific content.
 
 
 #### 3. Author side Own Content Management:
 
-- `POST /api/content/author/create/`: Create own content.
+- `POST /api/author/content/create/`: Create own content.
 
-- `GET /api/content/author/content-list/`: List all own contents .
+- `GET /api/author/content/content-list/`: List all own contents .
 
-- `GET /api/content/author/detail/{content_id}/`: Get detaild view of specific content.
+- `GET /api/author/content/detail/{content_id}/`: Get detaild view of specific content.
 
 
-- `PUT /api/content/author/edit/{content_id}/`: Edit s specific content own.
+- `PUT /api/author/content/edit/{content_id}/`: Edit s specific content own.
 
-- `DELETE /api/content/author/delete/{content_id}/`: Delete specific content own.
+- `DELETE /api/author/content/delete/{content_id}/`: Delete specific content own.
 
 ## API Documentation
 
